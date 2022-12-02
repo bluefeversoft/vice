@@ -23,6 +23,9 @@ You can find the download to the latest release (Vice 1.1) here:
 
 https://bluefeversoft.com/
 
+## I want to copy it, can I?
+
+You can do whatever you want with the code. A lot of engines have been inspired by Vice - not all give credit. Probably it's better to give credit than not.
 
 ## What are the main features?
 
