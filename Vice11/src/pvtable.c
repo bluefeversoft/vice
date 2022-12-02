@@ -3,11 +3,13 @@
 #include "stdio.h"
 #include "defs.h"
 
-int GetPvLine(const int depth, S_BOARD *pos) {
+S_HASHTABLE HashTable[1];
+
+int GetPvLine(const int depth, S_BOARD *pos, S_HASHTABLE *table) {
 
 	ASSERT(depth < MAXDEPTH && depth >= 1);
 
-	int move = ProbePvMove(pos);
+	int move = ProbePvMove(pos, table);
 	int count = 0;
 	
 	while(move != NOMOVE && count < depth) {
@@ -20,7 +22,7 @@ int GetPvLine(const int depth, S_BOARD *pos) {
 		} else {
 			break;
 		}		
-		move = ProbePvMove(pos);	
+		move = ProbePvMove(pos, table);	
 	}
 	
 	while(pos->ply > 0) {
@@ -66,30 +68,30 @@ void InitHashTable(S_HASHTABLE *table, const int MB) {
 	
 }
 
-int ProbeHashEntry(S_BOARD *pos, int *move, int *score, int alpha, int beta, int depth) {
+int ProbeHashEntry(S_BOARD *pos, S_HASHTABLE *table, int *move, int *score, int alpha, int beta, int depth) {
 
-	int index = pos->posKey % pos->HashTable->numEntries;
+	int index = pos->posKey % table->numEntries;
 	
-	ASSERT(index >= 0 && index <= pos->HashTable->numEntries - 1);
+	ASSERT(index >= 0 && index <= table->numEntries - 1);
     ASSERT(depth>=1&&depth<MAXDEPTH);
     ASSERT(alpha<beta);
     ASSERT(alpha>=-INF_BOUND&&alpha<=INF_BOUND);
     ASSERT(beta>=-INF_BOUND&&beta<=INF_BOUND);
     ASSERT(pos->ply>=0&&pos->ply<MAXDEPTH);
 	
-	if( pos->HashTable->pTable[index].posKey == pos->posKey ) {
-		*move = pos->HashTable->pTable[index].move;
-		if(pos->HashTable->pTable[index].depth >= depth){
-			pos->HashTable->hit++;
+	if( table->pTable[index].posKey == pos->posKey ) {
+		*move = table->pTable[index].move;
+		if(table->pTable[index].depth >= depth){
+			table->hit++;
 			
-			ASSERT(pos->HashTable->pTable[index].depth>=1&&pos->HashTable->pTable[index].depth<MAXDEPTH);
-            ASSERT(pos->HashTable->pTable[index].flags>=HFALPHA&&pos->HashTable->pTable[index].flags<=HFEXACT);
+			ASSERT(table->pTable[index].depth>=1&&table->pTable[index].depth<MAXDEPTH);
+            ASSERT(table->pTable[index].flags>=HFALPHA&&table->pTable[index].flags<=HFEXACT);
 			
-			*score = pos->HashTable->pTable[index].score;
+			*score = table->pTable[index].score;
 			if(*score > ISMATE) *score -= pos->ply;
             else if(*score < -ISMATE) *score += pos->ply;
 			
-			switch(pos->HashTable->pTable[index].flags) {
+			switch(table->pTable[index].flags) {
 
                 case HFALPHA: if(*score<=alpha) {
                     *score=alpha;
@@ -112,39 +114,39 @@ int ProbeHashEntry(S_BOARD *pos, int *move, int *score, int alpha, int beta, int
 	return FALSE;
 }
 
-void StoreHashEntry(S_BOARD *pos, const int move, int score, const int flags, const int depth) {
+void StoreHashEntry(S_BOARD *pos, S_HASHTABLE *table, const int move, int score, const int flags, const int depth) {
 
-	int index = pos->posKey % pos->HashTable->numEntries;
+	int index = pos->posKey % table->numEntries;
 	
-	ASSERT(index >= 0 && index <= pos->HashTable->numEntries - 1);
+	ASSERT(index >= 0 && index <= table->numEntries - 1);
 	ASSERT(depth>=1&&depth<MAXDEPTH);
     ASSERT(flags>=HFALPHA&&flags<=HFEXACT);
     ASSERT(score>=-INF_BOUND&&score<=INF_BOUND);
     ASSERT(pos->ply>=0&&pos->ply<MAXDEPTH);
 	
-	if( pos->HashTable->pTable[index].posKey == 0) {
-		pos->HashTable->newWrite++;
+	if( table->pTable[index].posKey == 0) {
+		table->newWrite++;
 	} else {
-		pos->HashTable->overWrite++;
+		table->overWrite++;
 	}
 	
 	if(score > ISMATE) score += pos->ply;
     else if(score < -ISMATE) score -= pos->ply;
 	
-	pos->HashTable->pTable[index].move = move;
-    pos->HashTable->pTable[index].posKey = pos->posKey;
-	pos->HashTable->pTable[index].flags = flags;
-	pos->HashTable->pTable[index].score = score;
-	pos->HashTable->pTable[index].depth = depth;
+	table->pTable[index].move = move;
+    table->pTable[index].posKey = pos->posKey;
+	table->pTable[index].flags = flags;
+	table->pTable[index].score = score;
+	table->pTable[index].depth = depth;
 }
 
-int ProbePvMove(const S_BOARD *pos) {
+int ProbePvMove(const S_BOARD *pos, S_HASHTABLE *table) {
 
-	int index = pos->posKey % pos->HashTable->numEntries;
-	ASSERT(index >= 0 && index <= pos->HashTable->numEntries - 1);
+	int index = pos->posKey % table->numEntries;
+	ASSERT(index >= 0 && index <= table->numEntries - 1);
 	
-	if( pos->HashTable->pTable[index].posKey == pos->posKey ) {
-		return pos->HashTable->pTable[index].move;
+	if( table->pTable[index].posKey == pos->posKey ) {
+		return table->pTable[index].move;
 	}
 	
 	return NOMOVE;

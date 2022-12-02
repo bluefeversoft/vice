@@ -123,7 +123,6 @@ typedef struct {
 	// piece list
 	int pList[13][10];
 
-	S_HASHTABLE HashTable[1];
 	int PvArray[MAXDEPTH];
 
 	int searchHistory[13][BRD_SQ_NUM];
@@ -239,6 +238,7 @@ extern U64 WhitePassedMask[64];
 extern U64 IsolatedMask[64];
 
 extern S_OPTIONS EngineOptions[1];
+extern S_HASHTABLE HashTable[1];
 
 /* FUNCTIONS */
 
@@ -281,7 +281,7 @@ extern void MirrorEvalTest(S_BOARD *pos);
 extern int SqIs120(const int sq);
 extern int PceValidEmptyOffbrd(const int pce);
 extern int MoveListOk(const S_MOVELIST *list,  const S_BOARD *pos);
-extern void DebugAnalysisTest(S_BOARD *pos, S_SEARCHINFO *info);
+extern void DebugAnalysisTest(S_BOARD *pos, S_SEARCHINFO *info, S_HASHTABLE *table);
 
 // movegen.c
 extern void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list);
@@ -299,7 +299,7 @@ extern void TakeNullMove(S_BOARD *pos);
 extern void PerftTest(int depth, S_BOARD *pos);
 
 // search.c
-extern void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info);
+extern void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info, S_HASHTABLE *table);
 
 // misc.c
 extern int GetTimeMs();
@@ -307,10 +307,10 @@ extern void ReadInput(S_SEARCHINFO *info);
 
 // pvtable.c
 extern void InitHashTable(S_HASHTABLE *table, const int MB);
-extern void StoreHashEntry(S_BOARD *pos, const int move, int score, const int flags, const int depth);
-extern int ProbeHashEntry(S_BOARD *pos, int *move, int *score, int alpha, int beta, int depth);
-extern int ProbePvMove(const S_BOARD *pos);
-extern int GetPvLine(const int depth, S_BOARD *pos);
+extern void StoreHashEntry(S_BOARD *pos, S_HASHTABLE *table, const int move, int score, const int flags, const int depth);
+extern int ProbeHashEntry(S_BOARD *pos, S_HASHTABLE *table, int *move, int *score, int alpha, int beta, int depth);
+extern int ProbePvMove(const S_BOARD *pos, S_HASHTABLE *table);
+extern int GetPvLine(const int depth, S_BOARD *pos, S_HASHTABLE *table);
 extern void ClearHashTable(S_HASHTABLE *table);
 
 // evaluate.c
