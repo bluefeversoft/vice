@@ -3,6 +3,8 @@ This is the repo for the Vice chess engine series on YouTube.
 
 You can find the playlist here: [Link to playlist](https://www.youtube.com/playlist?list=PLZ1QII7yudbecO6a-zAI6cuGP1LLnmW8e)
 
+From part 96 onwards, this repo has a branch with the code for that video. For exmaple, part 97 code is on branch Chapter 97.
+
 ## Getting in touch / Contributing
 
 You can find the Discord server here: https://discord.gg/9hCUD4n7R2
