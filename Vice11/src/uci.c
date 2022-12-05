@@ -23,7 +23,8 @@ thrd_t LaunchSearchThread(S_BOARD *pos, S_SEARCHINFO *info, S_HASHTABLE *table )
 	return th;
 }
 
-void JoinSearchThread() {
+void JoinSearchThread(S_SEARCHINFO *info) {
+	info->stopped = TRUE;
 	thrd_join(mainSearchThread, NULL);
 }
 
@@ -169,12 +170,10 @@ void Uci_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
             ParseFen(START_FEN, pos);
             ParseGo("go infinite", info, pos, HashTable);
         } else if (!strncmp(line, "stop", 4)) {
-            info->stopped = TRUE;
-			JoinSearchThread();
+			JoinSearchThread(info);
         } else if (!strncmp(line, "quit", 4)) {
-            info->stopped = TRUE;
             info->quit = TRUE;
-			JoinSearchThread();
+			JoinSearchThread(info);
             break;
         } else if (!strncmp(line, "uci", 3)) {
             printf("id name %s\n",NAME);
