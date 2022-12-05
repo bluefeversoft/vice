@@ -2,4 +2,4 @@ SRCS=$(wildcard *.c)
 NAME=vice12
 
 all:
-	gcc $(SRCS) -o $(NAME) -O2
+	gcc $(SRCS) -o $(NAME) -pthread -O2

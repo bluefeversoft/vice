@@ -2,12 +2,33 @@
 
 #include "stdio.h"
 #include "defs.h"
+#include "tinycthread.h"
 #include "string.h"
 
 #define INPUTBUFFER 400 * 6
 
+thrd_t mainSearchThread;
+
+thrd_t LaunchSearchThread(S_BOARD *pos, S_SEARCHINFO *info, S_HASHTABLE *table ) {
+	S_SEARCH_THREAD_DATA *pSearchData = malloc(sizeof(S_SEARCH_THREAD_DATA));
+
+	pSearchData->originalPosition = pos;
+	pSearchData->info = info;
+	pSearchData->ttable = table;
+
+
+	thrd_t th;
+	thrd_create(&th, &SearchPosition_Thread, (void*)pSearchData);
+
+	return th;
+}
+
+void JoinSearchThread() {
+	thrd_join(mainSearchThread, NULL);
+}
+
 // go depth 6 wtime 180000 btime 100000 binc 1000 winc 1000 movetime 1000 movestogo 40
-void ParseGo(char* line, S_SEARCHINFO *info, S_BOARD *pos) {
+void ParseGo(char* line, S_SEARCHINFO *info, S_BOARD *pos, S_HASHTABLE *table) {
 
 	int depth = -1, movestogo = 30,movetime = -1;
 	int time = -1, inc = 0;
@@ -67,7 +88,8 @@ void ParseGo(char* line, S_SEARCHINFO *info, S_BOARD *pos) {
 
 	printf("time:%d start:%d stop:%d depth:%d timeset:%d\n",
 		time,info->starttime,info->stoptime,info->depth,info->timeset);
-	SearchPosition(pos, info, HashTable);
+	//SearchPosition(pos, info, HashTable);
+	mainSearchThread = LaunchSearchThread(pos, info, table);
 }
 
 // position fen fenstr
@@ -142,12 +164,17 @@ void Uci_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
             ParsePosition("position startpos\n", pos);
         } else if (!strncmp(line, "go", 2)) {
             printf("Seen Go..\n");
-            ParseGo(line, info, pos);
+            ParseGo(line, info, pos, HashTable);
         } else if (!strncmp(line, "run", 3)) {
             ParseFen(START_FEN, pos);
-            ParseGo("go infinite", info, pos);
+            ParseGo("go infinite", info, pos, HashTable);
+        } else if (!strncmp(line, "stop", 4)) {
+            info->stopped = TRUE;
+			JoinSearchThread();
         } else if (!strncmp(line, "quit", 4)) {
+            info->stopped = TRUE;
             info->quit = TRUE;
+			JoinSearchThread();
             break;
         } else if (!strncmp(line, "uci", 3)) {
             printf("id name %s\n",NAME);
