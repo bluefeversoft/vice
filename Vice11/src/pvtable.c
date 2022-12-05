@@ -5,6 +5,7 @@
 
 S_HASHTABLE HashTable[1];
 
+
 int GetPvLine(const int depth, S_BOARD *pos, S_HASHTABLE *table) {
 
 	ASSERT(depth < MAXDEPTH && depth >= 1);
@@ -43,8 +44,10 @@ void ClearHashTable(S_HASHTABLE *table) {
     tableEntry->depth = 0;
     tableEntry->score = 0;
     tableEntry->flags = 0;
+    tableEntry->age = 0;
   }
   table->newWrite=0;
+  table->currentAge=0;
 }
 
 void InitHashTable(S_HASHTABLE *table, const int MB) {  
@@ -116,7 +119,12 @@ int ProbeHashEntry(S_BOARD *pos, S_HASHTABLE *table, int *move, int *score, int 
 
 void StoreHashEntry(S_BOARD *pos, S_HASHTABLE *table, const int move, int score, const int flags, const int depth) {
 
-	int index = pos->posKey % table->numEntries;
+	int index = pos->posKey % table->numEntries;	
+
+	/*if (table->pTable[index].depth > 8 && depth < 8) { 
+		printf("new_key:%llX old_key:%llX index:%d depth:%d replace:%d\n", 
+		pos->posKey, table->pTable[index].posKey, index, depth, table->pTable[index].depth); 
+	}*/
 	
 	ASSERT(index >= 0 && index <= table->numEntries - 1);
 	ASSERT(depth>=1&&depth<MAXDEPTH);
@@ -124,11 +132,19 @@ void StoreHashEntry(S_BOARD *pos, S_HASHTABLE *table, const int move, int score,
     ASSERT(score>=-INF_BOUND&&score<=INF_BOUND);
     ASSERT(pos->ply>=0&&pos->ply<MAXDEPTH);
 	
+	int replace = FALSE;
+	
 	if( table->pTable[index].posKey == 0) {
 		table->newWrite++;
+		replace = TRUE;
 	} else {
-		table->overWrite++;
+		if(table->pTable[index].age < table->currentAge ||
+			table->pTable[index].depth < depth) {
+				replace = TRUE;
+			}
 	}
+
+	if (replace == FALSE) return;
 	
 	if(score > ISMATE) score += pos->ply;
     else if(score < -ISMATE) score -= pos->ply;
