@@ -314,7 +314,7 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info, S_HASHTABLE *table) {
 			pvMoves = GetPvLine(currentDepth, pos, table);
 			bestMove = pos->PvArray[0];
 
-			printf("info score cp %d depth %d nodes %ld time %d ",
+			printf("info score cp %d depth %d nodes %ld time %d pv",
 				bestScore,currentDepth,info->nodes,GetTimeMs()-info->starttime);
 			
 			pvMoves = GetPvLine(currentDepth, pos, table);
