@@ -71,6 +71,7 @@ static void ClearForSearch(S_BOARD *pos, S_SEARCHINFO *info, S_HASHTABLE *table)
 	table->hit=0;
 	table->cut=0;
 	pos->ply = 0;
+	table->currentAge++;
 
 	info->stopped = 0;
 	info->nodes = 0;
