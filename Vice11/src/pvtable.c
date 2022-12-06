@@ -154,6 +154,7 @@ void StoreHashEntry(S_BOARD *pos, S_HASHTABLE *table, const int move, int score,
 	table->pTable[index].flags = flags;
 	table->pTable[index].score = score;
 	table->pTable[index].depth = depth;
+	table->pTable[index].age = table->currentAge;
 }
 
 int ProbePvMove(const S_BOARD *pos, const S_HASHTABLE *table) {
