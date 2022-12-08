@@ -139,7 +139,7 @@ void StoreHashEntry(S_BOARD *pos, S_HASHTABLE *table, const int move, int score,
 		replace = TRUE;
 	} else {
 		if(table->pTable[index].age < table->currentAge ||
-			table->pTable[index].depth < depth) {
+			table->pTable[index].depth <= depth) {
 				replace = TRUE;
 			}
 	}
