@@ -20,6 +20,11 @@ int main(int argc, char *argv[]) {
     InitHashTable(HashTable, 64);
 	setbuf(stdin, NULL);
     setbuf(stdout, NULL);
+
+	//TempHashTest(PERFT);
+	//TempHashTest(WAC1);
+	//exit(0);
+
     
     int ArgNum = 0;
     
