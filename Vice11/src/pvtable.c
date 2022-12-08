@@ -3,6 +3,49 @@
 #include "stdio.h"
 #include "defs.h"
 
+
+#define EXTRACT_SCORE(x) ((x & 0xFFFF) - INF_BOUND)
+#define EXTRACT_DEPTH(x) ((x >> 16) & 0x3F)
+#define EXTRACT_FLAGS(x) ((x >> 23) & 0x3)
+#define EXTRACT_MOVE(x) ((int)(x >> 25))
+
+#define FOLD_DATA(sc, de, fl, mv) ( (sc + INF_BOUND) | (de << 16) | (fl << 23)  | ((U64)mv << 25))
+
+
+void DataCheck(const int move) {
+	int depth = rand() % MAXDEPTH;
+	int flag = rand() % 3;
+	int score = rand() % AB_BOUND;
+
+	U64 data = FOLD_DATA(score, depth, flag, move);
+	printf("Orig: move:%s d:%d fl:%d sc:%d data:%llX\n", PrMove(move), depth, flag, score, data);
+	printf("Check: move:%s d:%d fl:%d sc:%d\n\n", 
+	PrMove(EXTRACT_MOVE(data)), 
+	EXTRACT_DEPTH(data), 
+	EXTRACT_FLAGS(data), 
+	EXTRACT_SCORE(data));
+}
+
+
+void TempHashTest(char *fen) {
+	S_BOARD b[1];
+	ParseFen(fen, b);
+
+    S_MOVELIST list[1];
+    GenerateAllMoves(b,list);
+      
+    int MoveNum = 0;
+	for(MoveNum = 0; MoveNum < list->count; ++MoveNum) {	
+       
+        if ( !MakeMove(b,list->moves[MoveNum].move))  {
+            continue;
+        }
+        TakeMove(b);
+		DataCheck(list->moves[MoveNum].move);
+    }
+}
+
+
 S_HASHTABLE HashTable[1];
 
 
@@ -78,8 +121,8 @@ int ProbeHashEntry(S_BOARD *pos, S_HASHTABLE *table, int *move, int *score, int 
 	ASSERT(index >= 0 && index <= table->numEntries - 1);
     ASSERT(depth>=1&&depth<MAXDEPTH);
     ASSERT(alpha<beta);
-    ASSERT(alpha>=-INF_BOUND&&alpha<=INF_BOUND);
-    ASSERT(beta>=-INF_BOUND&&beta<=INF_BOUND);
+    ASSERT(alpha>=-AB_BOUND&&alpha<=AB_BOUND);
+    ASSERT(beta>=-AB_BOUND&&beta<=AB_BOUND);
     ASSERT(pos->ply>=0&&pos->ply<MAXDEPTH);
 	
 	if( table->pTable[index].posKey == pos->posKey ) {
@@ -129,7 +172,7 @@ void StoreHashEntry(S_BOARD *pos, S_HASHTABLE *table, const int move, int score,
 	ASSERT(index >= 0 && index <= table->numEntries - 1);
 	ASSERT(depth>=1&&depth<MAXDEPTH);
     ASSERT(flags>=HFALPHA&&flags<=HFEXACT);
-    ASSERT(score>=-INF_BOUND&&score<=INF_BOUND);
+    ASSERT(score>=-AB_BOUND&&score<=AB_BOUND);
     ASSERT(pos->ply>=0&&pos->ply<MAXDEPTH);
 	
 	int replace = FALSE;
@@ -139,7 +182,7 @@ void StoreHashEntry(S_BOARD *pos, S_HASHTABLE *table, const int move, int score,
 		replace = TRUE;
 	} else {
 		if(table->pTable[index].age < table->currentAge ||
-			table->pTable[index].depth < depth) {
+			table->pTable[index].depth <= depth) {
 				replace = TRUE;
 			}
 	}
