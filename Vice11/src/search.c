@@ -339,6 +339,7 @@ int StartWorkerThread(void *data) {
 	if (workerData->threadNumber == 0) {
 		printf("bestmove %s\n",PrMove(workerData->bestMove));
 	}
+    free(data);
 
 }
 
