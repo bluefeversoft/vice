@@ -31,6 +31,9 @@ typedef unsigned long long U64;
 #define MAXDEPTH 64
 
 #define START_FEN  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#define FINE_70 "8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - -"
+#define WAC_2 "8/7p/5k2/5p2/p1p2P2/Pr1pPK2/1P1R3P/8 b - -"
+#define LCT_1 "r3kb1r/3n1pp1/p6p/2pPp2q/Pp2N3/3B2PP/1PQ2P2/R3K2R w KQkq -"
 
 #define INF_BOUND 32000
 #define AB_BOUND 30000
@@ -69,11 +72,11 @@ typedef struct {
 enum {  HFNONE, HFALPHA, HFBETA, HFEXACT};
 
 typedef struct {
-	U64 posKey;
+	/*U64 posKey;
 	int move;
 	int score;
 	int depth;
-	int flags;
+	int flags;*/
 	int age;
 	U64 smp_data;
 	U64 smp_key;

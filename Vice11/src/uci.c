@@ -167,7 +167,7 @@ void Uci_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
             printf("Seen Go..\n");
             ParseGo(line, info, pos, HashTable);
         } else if (!strncmp(line, "run", 3)) {
-            ParseFen(START_FEN, pos);
+            ParseFen(LCT_1, pos);
             ParseGo("go depth 10", info, pos, HashTable);
         } else if (!strncmp(line, "stop", 4)) {
 			JoinSearchThread(info);
