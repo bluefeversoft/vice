@@ -29,6 +29,7 @@ typedef unsigned long long U64;
 #define MAXGAMEMOVES 2048
 #define MAXPOSITIONMOVES 256
 #define MAXDEPTH 64
+#define MAXTHREADS 32
 
 #define START_FEN  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 #define FINE_70 "8/k7/3p4/p2P1p2/P2P1P2/8/8/K7 w - -"
@@ -155,6 +156,8 @@ typedef struct {
 	float fhf;
 	int nullCut;
 
+    int threadNum;
+
 } S_SEARCHINFO;
 
 typedef struct {
@@ -167,6 +170,17 @@ typedef struct {
 	S_BOARD *originalPosition;
 	S_HASHTABLE *ttable;
 } S_SEARCH_THREAD_DATA;
+
+
+typedef struct {
+    S_BOARD *pos;
+    S_SEARCHINFO *info;
+	S_HASHTABLE *ttable;
+
+    int threadNumber;
+    int depth;
+    int bestMove;
+} S_SEARCH_WORKER_DATA;
 
 
 /* GAME MOVE */

@@ -167,8 +167,8 @@ void Uci_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
             printf("Seen Go..\n");
             ParseGo(line, info, pos, HashTable);
         } else if (!strncmp(line, "run", 3)) {
-            ParseFen(LCT_1, pos);
-            ParseGo("go depth 10", info, pos, HashTable);
+            ParseFen(WAC_2, pos);
+            ParseGo("go infinite", info, pos, HashTable);
         } else if (!strncmp(line, "stop", 4)) {
 			JoinSearchThread(info);
         } else if (!strncmp(line, "quit", 4)) {
@@ -188,6 +188,12 @@ void Uci_Loop(S_BOARD *pos, S_SEARCHINFO *info) {
 			if(MB > MAX_HASH) MB = MAX_HASH;
 			printf("Set Hash to %d MB\n",MB);
 			InitHashTable(HashTable, MB);
+		} else if (!strncmp(line, "setoption name Threads value ", 29)) {			
+			sscanf(line,"%*s %*s %*s %*s %d",&MB);
+			if(MB < 1) MB = 1;
+			if(MB > MAXTHREADS) MB = MAXTHREADS;
+			printf("Set Threads to %d MB\n",MB);
+			info->threadNum = MB;
 		} else if (!strncmp(line, "setoption name Book value ", 26)) {			
 			char *ptrTrue = NULL;
 			ptrTrue = strstr(line, "true");

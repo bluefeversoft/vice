@@ -123,7 +123,7 @@ void InitHashTable(S_HASHTABLE *table, const int MB) {
 	int HashSize = 0x100000 * MB;
     table->numEntries = HashSize / sizeof(S_HASHENTRY);
     table->numEntries -= 2;
-    table->numEntries = 1000000;
+    //table->numEntries = 1000000;
 	
 	if(table->pTable!=NULL) {
 		free(table->pTable);
