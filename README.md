@@ -3,7 +3,7 @@ This is the repo for the Vice chess engine series on YouTube.
 
 You can find the playlist here: [Link to playlist](https://www.youtube.com/playlist?list=PLZ1QII7yudbc-Ky058TEaOstZHVbT-2hg)
 
-From part 97 onwards, this repo has a branch with the code for that video. For exmaple, part 97 code is on branch Chapter 97.
+**From part 97 onwards, this repo has a branch with the code for that video. For exmaple, part 97 code is on branch Chapter 97.**
 
 ## Getting in touch / Contributing
 
@@ -41,6 +41,11 @@ Vice is simple, with the following features:
 - Polyglot opening books
 - MVV/LVA move ordering
 - Basic evaluation
+
+## bugs to fix:
+- The PickMove function needs a BestScore of -(very low) instead of 0
+- Time management for x moves in x minutes causes losses
+- ID loop needs to only exit when it has a legal move (i.e done depth 1 at least)
 
 ## Who actually did this?
 
