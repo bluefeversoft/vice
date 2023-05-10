@@ -2,6 +2,7 @@
 
 #include "stdio.h"
 #include "defs.h"
+#include "unistd.h"
 
 #ifdef WIN32
 #include "windows.h"
@@ -66,7 +67,7 @@ void ReadInput(S_SEARCHINFO *info) {
     if (InputWaiting()) {
 		info->stopped = TRUE;
 		do {
-		  bytes=read(fileno(stdin),input,256);
+		  bytes = read(fileno(stdin),input,256);
 		} while (bytes<0);
 		endc = strchr(input,'\n');
 		if (endc) *endc=0;

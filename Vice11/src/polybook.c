@@ -42,7 +42,7 @@ void InitPolyBook() {
 		
 		size_t returnValue;
 		returnValue = fread(entries, sizeof(S_POLY_BOOK_ENTRY), NumEntries, pFile);
-		printf("fread() %ld Entries Read in from file\n", returnValue);
+		printf("fread() %zu Entries Read in from file\n", returnValue);
 		
 		if(NumEntries > 0) {
 			EngineOptions->UseBook = TRUE;

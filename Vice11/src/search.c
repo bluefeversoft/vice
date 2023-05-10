@@ -327,7 +327,7 @@ void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info) {
 			}
 			if(info->GAME_MODE == UCIMODE || info->POST_THINKING == TRUE) {
 				pvMoves = GetPvLine(currentDepth, pos);
-				if(!info->GAME_MODE == XBOARDMODE) {
+				if(info->GAME_MODE != XBOARDMODE) {
 					printf("pv");
 				}
 				for(pvNum = 0; pvNum < pvMoves; ++pvNum) {
