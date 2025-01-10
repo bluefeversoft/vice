@@ -5,6 +5,10 @@ You can find the playlist here: [Link to playlist](https://www.youtube.com/playl
 
 **From part 97 onwards, this repo has a branch with the code for that video. For exmaple, part 97 code is on branch Chapter 97.**
 
+## latest version
+
+See branch 106
+
 ## Getting in touch / Contributing
 
 You can find the Discord server here: https://discord.gg/9hCUD4n7R2
