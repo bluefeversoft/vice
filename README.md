@@ -3,6 +3,10 @@ This is the repo for the Vice chess engine series on YouTube.
 
 You can find the playlist here: [Link to playlist](https://www.youtube.com/playlist?list=PLZ1QII7yudbecO6a-zAI6cuGP1LLnmW8e)
 
+## Where is the Latest Version
+
+You'll find the latest SMP version on the Branch for Chapter 106
+
 ## Getting in touch / Contributing
 
 You can find the Discord server here: https://discord.gg/9hCUD4n7R2
